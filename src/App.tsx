@@ -1,15 +1,48 @@
 import { useEffect, useId, useRef, useState } from "react";
 import { Sampler } from "tone";
-import { Input, WebMidi, type NoteMessageEvent } from "webmidi";
+import {
+  Input,
+  Note,
+  Utilities,
+  WebMidi,
+  type NoteMessageEvent,
+} from "webmidi";
 
 import A1 from "./assets/piano-mp3/A1.mp3";
 import { DiatonicKeyboard } from "./components/keyboards/DiatonicKeyboard";
+import { Piano } from "./components/keyboards/Piano";
+
+function buildNoteRange(start: Note, end: Note): Note[] {
+  const startNumber = start.number;
+  const endNumber = end.number;
+
+  const numberRange: number[] = [];
+  for (let i = startNumber; i <= endNumber; i++) {
+    numberRange.push(i);
+  }
+
+  return Utilities.buildNoteArray(numberRange);
+}
+
+const exampleRange = buildNoteRange(
+  Utilities.buildNote("B2"),
+  Utilities.buildNote("E6"),
+);
 
 const getMidiErrorMessage = (error: unknown) => {
   if (error instanceof DOMException && error.name === "NotAllowedError") {
     return "Cannot access MIDI devices: please authorize MIDI access in your browser settings";
   }
   return `MIDI Error: ${error}`;
+};
+
+const ComputerKeyboardNoteMap: Record<string, string> = {
+  z: "E4",
+  x: "F4",
+  c: "G4",
+  v: "A4",
+  b: "B4",
+  n: "C5",
 };
 
 function App() {
@@ -37,9 +70,6 @@ function App() {
   }, []);
 
   useEffect(() => {
-    if (!webMidiEnabled || !selectedInputValue) return undefined;
-
-    const input = WebMidi.getInputById(selectedInputValue);
     const handleNoteOn = (e: NoteMessageEvent) => {
       setPressedKeys((prev) => {
         return [...prev, e.note.identifier];
@@ -53,20 +83,48 @@ function App() {
         return prev.filter((noteId) => noteId !== e.note.identifier);
       });
     };
-    input.addListener("noteon", handleNoteOn);
-    input.addListener("noteoff", handleNoteOff);
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      const noteId = ComputerKeyboardNoteMap[e.key];
+      if (!noteId) return;
+      setPressedKeys((prev) => {
+        return [...prev, noteId];
+      });
+      samplerRef.current?.triggerAttack(noteId);
+    };
+
+    const handleKeyUp = (e: KeyboardEvent) => {
+      const noteId = ComputerKeyboardNoteMap[e.key];
+      if (!noteId) return;
+      samplerRef.current?.triggerRelease(noteId);
+      setPressedKeys((prev) => {
+        return prev.filter((_noteId) => _noteId !== noteId);
+      });
+    };
+
+    let input: Input | undefined;
+    if (webMidiEnabled && selectedInputValue)
+      input = WebMidi.getInputById(selectedInputValue);
+
+    input?.addListener("noteon", handleNoteOn);
+    input?.addListener("noteoff", handleNoteOff);
+    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("keyup", handleKeyUp);
 
     return () => {
-      input.removeListener("noteon", handleNoteOn);
-      input.removeListener("noteoff", handleNoteOff);
+      input?.removeListener("noteon", handleNoteOn);
+      input?.removeListener("noteoff", handleNoteOff);
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("keyup", handleKeyUp);
     };
   }, [selectedInputValue, webMidiEnabled]);
 
   return (
     <div className="flex flex-col h-screen w-screen">
-      <header className="bg-amber-700 h-16 text-white p-2 flex items-center">
+      <header className="bg-amber-700 h-16 text-white p-2 flex items-center shrink-0">
         <h1 className="text-3xl font-bold">Accordion Multimap (beta)</h1>
       </header>
+                <Piano notes={exampleRange} pressedKeys={pressedKeys} />
       <div className="flex h-full">
         <div className="flex flex-1 p-2 items-center justify-center">
           <DiatonicKeyboard pressedKeys={pressedKeys} />

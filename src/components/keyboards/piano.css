@@ -1,0 +1,42 @@
+:root {
+  --piano-natural-key-height: 180px;
+  --piano-natural-key-width: 40px;
+}
+
+.piano {
+  display: flex;
+}
+
+.natural-key {
+  height: var(--piano-natural-key-height);
+  width: var(--piano-natural-key-width);
+  border-style: solid;
+  border-width: 1px;
+  border-color: black;
+  border-right-color: transparent;
+  z-index: 1;
+}
+
+.accidental-key {
+  height: calc(var(--piano-natural-key-height) / 1.7);
+  width: calc(var(--piano-natural-key-width) / 2);
+  background-color: black;
+  z-index: 2;
+}
+
+.accidental-key,
+.accidental-key + .natural-key {
+  margin-left: calc(var(--piano-natural-key-width) / -4);
+}
+
+.natural-key:last-child {
+  border-right-color: black;
+}
+
+.natural-key[data-pressed="true"] {
+  background-color: gray;
+}
+
+.accidental-key[data-pressed="true"] {
+  background-color: blue;
+}
