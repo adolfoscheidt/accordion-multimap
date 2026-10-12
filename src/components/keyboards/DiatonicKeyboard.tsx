@@ -1,4 +1,4 @@
-import { ButtonKey } from "../ButtonKey";
+import { ButtonKey } from "../keys/ButtonKey";
 
 const firstRowNotesOpening = [
   "D3",
@@ -51,66 +51,38 @@ const secondRowNotesClosing = [
   "E6",
 ];
 
-export function DiatonicKeyboard({
-  pressedKeys = [],
-}: {
-  pressedKeys?: string[];
-}) {
+export function DiatonicKeyboard() {
   return (
     <div className="flex flex-col gap-8">
       <div className="flex flex-col-reverse gap-1 items-center">
         <div className="flex gap-1">
           {firstRowNotesOpening.map((noteId) => {
             return (
-              <ButtonKey
-                key={noteId}
-                note={noteId}
-                pressed={pressedKeys.includes(noteId)}
-                pressedColor="blue"
-              />
+              <ButtonKey key={noteId} note={noteId} pressedColor="green" />
             );
           })}
         </div>
         <div className="flex gap-1">
           {secondRowNotesOpening.map((noteId) => {
             return (
-              <ButtonKey
-                key={noteId}
-                note={noteId}
-                pressed={pressedKeys.includes(noteId)}
-                pressedColor="blue"
-              />
+              <ButtonKey key={noteId} note={noteId} pressedColor="green" />
             );
           })}
         </div>
-        <h2 className="text-6xl font-bold">Abrindo</h2>
+        <h2 className="text-4xl font-bold">Abrindo</h2>
       </div>
       <div className="flex flex-col-reverse gap-1 items-center">
         <div className="flex gap-1">
           {firstRowNotesClosing.map((noteId) => {
-            return (
-              <ButtonKey
-                key={noteId}
-                note={noteId}
-                pressed={pressedKeys.includes(noteId)}
-                pressedColor = 'yellow'
-              />
-            );
+            return <ButtonKey key={noteId} note={noteId} pressedColor="red" />;
           })}
         </div>
         <div className="flex gap-1">
           {secondRowNotesClosing.map((noteId) => {
-            return (
-              <ButtonKey
-                key={noteId}
-                note={noteId}
-                pressed={pressedKeys.includes(noteId)}
-                pressedColor = 'yellow'
-              />
-            );
+            return <ButtonKey key={noteId} note={noteId} pressedColor="red" />;
           })}
         </div>
-        <h2 className="text-6xl font-bold">Fechando</h2>
+        <h2 className="text-4xl font-bold">Fechando</h2>
       </div>
     </div>
   );
