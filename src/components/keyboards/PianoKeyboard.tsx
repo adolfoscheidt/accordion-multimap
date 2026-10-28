@@ -1,7 +1,10 @@
-import { Note } from "webmidi";
+import { Utilities } from "webmidi";
 import { PianoKey } from "../keys/PianoKey";
+import type { PianoKeyboard } from "./keyboards";
 
-export function PianoKeyboard({ notes = [] }: { notes: Note[] }) {
+export function PianoKeyboard({ keyboard }: { keyboard: PianoKeyboard }) {
+  const notes = Utilities.buildNoteArray(keyboard.notes);
+
   return (
     <div className="flex">
       {notes.map((note) => (
