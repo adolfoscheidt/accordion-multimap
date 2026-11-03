@@ -1,4 +1,5 @@
 import { ComputerKeyboardSection } from "./ComputerKeyboardSection";
+import { KeyboardsSection } from "./KeyboardsSection";
 import { MidiSection } from "./MidiSection";
 
 export function ControlPanel() {
@@ -8,6 +9,7 @@ export function ControlPanel() {
       <hr className="text-slate-300" />
       <ComputerKeyboardSection />
       <hr className="text-slate-300" />
+      <KeyboardsSection />
     </div>
   );
 }
