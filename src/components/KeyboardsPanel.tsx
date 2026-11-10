@@ -1,15 +1,12 @@
-import { PianoKeyboard } from "./keyboards/PianoKeyboard";
-import {
-  KEYBOARD_DIATONIC_8_BASS,
-  KEYBOARD_PIANO_120_BASS,
-} from "./keyboards/keyboards";
-import { ButtonKeyboard } from "./keyboards/ButtonKeyboard";
+import { useKeyboards } from "../hooks/useKeyboards";
+import { Keyboard } from "./keyboards/Keyboard";
 
 export function KeyboardsPanel() {
+  const { keyboardOne, keyboardTwo } = useKeyboards();
   return (
     <div className="flex flex-col flex-1 gap-8 p-2 items-center justify-center">
-      <PianoKeyboard keyboard={KEYBOARD_PIANO_120_BASS} />
-      <ButtonKeyboard keyboard={KEYBOARD_DIATONIC_8_BASS} />
+      <Keyboard keyboard={keyboardOne} />
+      <Keyboard keyboard={keyboardTwo} />
     </div>
   );
 }

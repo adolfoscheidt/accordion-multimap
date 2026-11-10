@@ -1,3 +1,4 @@
+import { KeyboardsContextProvider } from "../providers/KeyboardsContextProvider";
 import { ToneContextProvider } from "../providers/ToneContextProvider";
 import { TuningContextProvider } from "../providers/TuningContextProvider";
 import { ControlPanel } from "./control-panel/ControlPanel";
@@ -8,8 +9,10 @@ export function MultimapBody() {
     <div className="flex h-full">
       <ToneContextProvider>
         <TuningContextProvider>
-          <KeyboardsPanel />
-          <ControlPanel />
+          <KeyboardsContextProvider>
+            <KeyboardsPanel />
+            <ControlPanel />
+          </KeyboardsContextProvider>
         </TuningContextProvider>
       </ToneContextProvider>
     </div>

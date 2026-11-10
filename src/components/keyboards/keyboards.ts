@@ -1,12 +1,17 @@
+import { v4 as uuidv4 } from "uuid";
 import { Range } from "tonal";
 
 export type PianoKeyboard = {
+  uuid: string;
   name: string;
   notes: string[];
+  layout: "piano";
 };
 
 export type ButtonKeyboard = {
+  uuid: string;
   name: string;
+  layout: "button";
 } & (
   | { type: "chromatic"; tuning?: string; notes: string[][] }
   | {
@@ -19,12 +24,18 @@ export type ButtonKeyboard = {
     }
 );
 
+export type Keyboard = PianoKeyboard | ButtonKeyboard | undefined;
+
 export const KEYBOARD_PIANO_120_BASS: PianoKeyboard = {
+  layout: "piano",
+  uuid: uuidv4(),
   name: "Gaita Piano 120 Baixos",
   notes: Range.chromatic(["F3", "A6"], { sharps: true }),
 };
 
 export const KEYBOARD_DIATONIC_8_BASS: ButtonKeyboard = {
+  layout: "button",
+  uuid: uuidv4(),
   name: "Gaita Ponto 8 Baixos",
   type: "diatonic",
   tuning: "G",
@@ -39,3 +50,9 @@ export const KEYBOARD_DIATONIC_8_BASS: ButtonKeyboard = {
     ],
   },
 };
+
+// TODO maybe find better way to do this? To not have to update it by hand everytime a new keyboard is added.
+export const ALL_KEYBOARDS = [
+  KEYBOARD_PIANO_120_BASS,
+  KEYBOARD_DIATONIC_8_BASS,
+];
